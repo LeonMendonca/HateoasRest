@@ -4,9 +4,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
-    //"allowJs": true,
+    "allowJs": true,
     "resolveJsonModule": true,
-    //"moduleDetection": "force",
+    "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
 
