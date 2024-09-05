@@ -1,11 +1,18 @@
 import express from "express";
 import type { NextFunction, Request, Response } from "express";
 import { createServer } from "http";
+import type { Collection } from "mongodb";
 
 import { ClientStats, Req } from "./stats";
+import { MongoDbConnect } from "./database/conn";
+import type { Users, Articles } from "./database/conn";
+
 
 const app = express();
 const PORT = 3000;
+
+let collectionUserInst: Collection<Users>
+let collectionArticleInst: Collection<Articles>
 
 //chaining middleware
 app.use((req, res, next) => {
@@ -37,7 +44,22 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction)=> {
   res.status(500).send('Internal server error');
 });
 
-const server = createServer(app)
-server.listen(PORT, '127.0.0.1', ()=> {
-  console.log('listening to port',PORT);
-});
+(async()=>{
+  try {
+    const { collectionUser, collectionArticle } = await MongoDbConnect();
+    collectionUserInst = collectionUser;
+    collectionArticleInst = collectionArticle;
+    const server = createServer(app);
+    server.listen(PORT, '127.0.0.1', ()=> {
+      console.log('listening to port',PORT);
+    });
+  } catch (error) {
+    if(error instanceof Error) {
+      console.log(error.message);
+      return;
+    }
+    console.log(error);
+  } 
+})()
+
+export { collectionUserInst, collectionArticleInst };
