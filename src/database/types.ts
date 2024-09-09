@@ -2,18 +2,20 @@ import { ObjectId } from 'mongodb'
 
 type Roles = 'everyone' | 'admin' | 'moderator';
 
-type Users = {
+type TUsers = {
   _id: ObjectId;
   name: string;
   email: string;
+  password: string;
   role: Roles;
 }
 
-type Articles = {
+type TArticles = {
   _id: ObjectId;
   title: string;
   author: string;
+  referenceId: ObjectId;
   published_date: Date;
 }
 
-export type { Users, Articles }
+export type { TUsers, TArticles, Roles }

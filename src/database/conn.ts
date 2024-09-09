@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import type { Users, Articles } from "./types";
+import type { TUsers, TArticles } from "./types";
 
 const uri = 'mongodb://localhost:27017'
 
@@ -14,12 +14,14 @@ const mongodbClient = new MongoClient(uri, {
 
 async function MongoDbConnect() {
   await mongodbClient.connect();
-  const collectionUser = await mongodbClient.db('cms').createCollection<Users>('users');
-  const collectionArticle = await mongodbClient.db('cms').createCollection<Articles>('articles');
+  const cmsDatabase = mongodbClient.db('cms');
+  const collectionUser = await cmsDatabase.createCollection<TUsers>('users');
+  cmsDatabase.createIndex('users', 'name' ,{ unique: true });
+  const collectionArticle = await cmsDatabase.createCollection<TArticles>('articles');
   return { collectionUser, collectionArticle };
 };
 
-mongodbClient.on('connectionCreated',()=> {
+mongodbClient.on('connectionCreated' ,()=> {
   console.log('connected to database');
 });
 
