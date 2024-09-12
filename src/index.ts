@@ -52,7 +52,7 @@ app.get('/', (req: Request, res: Response) => {
 //404 middleware
 app.use((req: Request, res: Response)=> {
   const uris = uriHelper(req.url);
-  let helperMessage = uris;
+  let helperMessage: string | string[] = uris;
   if(typeof uris === 'string') {
     helperMessage = uris;
   } else {
