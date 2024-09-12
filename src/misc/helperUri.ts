@@ -4,7 +4,8 @@ function uriHelper(uriString: string): string[] | string {
   const urlObject = url.parse(uriString);
   const methodsWithURIs = {
     GET: ['/auth/articles/all', '/auth/articles/@me'],
-    POST: ['/auth/signup', '/auth/login', '/auth/articles/@me/addblog']
+    POST: ['/auth/signup', '/auth/login', '/auth/articles/@me/addarticles'],
+    PATCH: ['/auth/articles/@me/updatearticle/<articleid>']
   }
   const pattern = (urlObject.pathname) ? new RegExp(urlObject.pathname.replace(/^\//, ''), 'i') : undefined;
   if(!pattern) {
