@@ -13,8 +13,6 @@ r.get('/articles/all', checkSession, Controllers.getAllArticles);
 
 r.get('/articles/@me', checkSession, Controllers.getUserArticles);
 
-//r.get('/articles/@me/myarticles', checkSession, Controllers);
-
 r.post('/articles/@me/addarticle', checkSession, Controllers.createArticle)
 
 r.patch('/articles/@me/updatearticle/:articleid', checkSession, Controllers.patchArticle);
