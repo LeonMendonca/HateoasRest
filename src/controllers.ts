@@ -5,6 +5,7 @@ import { DAOclass } from "./misc/dao";
 import { createArticleObject, createUserObject, loginExistingUserObject, patchArticleObject } from "./misc/factoryFunctions";
 import { checkSessionId, createSessionId, getPayloadFromSid } from "./misc/session";
 import { ErrorCode } from "./customError/error";
+import { atLogin, userArticles } from "./misc/hypertextConst";
 
 const url = 'http://localhost:3000';
 
@@ -43,10 +44,7 @@ class Controllers {
       }
       res.status(200).json({ 
         sessionid: sessionid, 
-        links: {
-          myarticles: `${url}/auth/articles/@me?sessionid=${sessionid}`,
-          allarticles: `${url}/auth/articles/all?sessionid=${sessionid}&pageno=1`
-        }
+        links: atLogin(response, sessionid)
       });
     } catch (error) {
       if(error instanceof ErrorCode) {
@@ -65,7 +63,10 @@ class Controllers {
         throw new ErrorCode("not a valid session ID", 10003);
       }
       const response = await DAOclass.getUserArticlesDAO(payload._id);
-      res.status(200).json(response);
+      res.status(200).json({ 
+        links: userArticles(response),
+        response 
+      });
     } catch (error) {
       if(error instanceof ErrorCode) {
         //call error middleware
@@ -134,6 +135,9 @@ class Controllers {
       }
       if(!articleid) {
         throw new ErrorCode('No blog id', 10004);
+      }
+      if(payload.role !== 'admin') {
+        throw new ErrorCode('Not authorised', 30000);
       }
       const patchArticle = await patchArticleObject(body);
       const response = await DAOclass.patchArticleDAO(patchArticle, articleid);
